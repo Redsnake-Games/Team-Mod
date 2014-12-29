@@ -1,0 +1,7 @@
+*.log
+/.metadata
+/.gradle
+/eclipse
+/bin
+/build
+/src-old

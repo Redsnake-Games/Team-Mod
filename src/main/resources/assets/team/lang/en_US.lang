@@ -1,0 +1,20 @@
+tile.teamChest.name=Team Chest
+tile.teamBlock.name=Team Block
+tile.teamFlag.name=Team Flag
+tile.teamPressurePlate.name=Team Pressure Plate
+tile.teamSpawner.name=Golem Spawner
+
+item.teamSword.name=Team Sword
+item.teamHelmet.name=Team Helmet
+item.teamChestplate.name=Team Chestplate
+item.teamLeggings.name=Team Leggings
+item.teamBoots.name=Team Boots
+item.seggel.name=Cloth
+item.teamWappen.name=Seal of 
+
+itemGroup.tabTeam=Team Items
+
+chat.team.owner='s owner is %s
+chat.team.ownerless= is ownerless
+
+entity.teamGolem.name=Team Golem

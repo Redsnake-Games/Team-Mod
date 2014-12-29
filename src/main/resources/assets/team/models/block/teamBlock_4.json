@@ -1,0 +1,6 @@
+{
+    "parent": "team:block/teamBlock_all",
+    "textures": {
+        "all": "team:blocks/Block4"
+    }
+}

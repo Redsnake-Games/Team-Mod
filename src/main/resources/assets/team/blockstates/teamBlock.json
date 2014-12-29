@@ -1,0 +1,12 @@
+{
+    "variants": {
+        "metadata=0": { "model": "team:teamBlock_0" },
+        "metadata=1": { "model": "team:teamBlock_1" },
+        "metadata=2": { "model": "team:teamBlock_2" },
+        "metadata=3": { "model": "team:teamBlock_3" },
+        "metadata=4": { "model": "team:teamBlock_4" },
+        "metadata=5": { "model": "team:teamBlock_5" },
+        "metadata=6": { "model": "team:teamBlock_6" },
+        "metadata=7": { "model": "team:teamBlock_7" }
+    }
+}

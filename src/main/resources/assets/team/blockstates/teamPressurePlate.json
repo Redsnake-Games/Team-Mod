@@ -1,0 +1,6 @@
+{
+    "variants": {
+        "powered=false": { "model": "team:teamPressurePlate_up" },
+        "powered=true": { "model": "team:teamPressurePlate_down" }
+    }
+}
