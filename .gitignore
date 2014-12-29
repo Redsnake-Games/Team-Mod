@@ -4,3 +4,8 @@
 /bin
 /build
 /src-old
+/src/main/resources/changelog
+/src/main/resources/mods
+/src/main/resources/assets/fp
+/src/main/resources/assets/sem
+/src/main/resources/assets/mo_swords
