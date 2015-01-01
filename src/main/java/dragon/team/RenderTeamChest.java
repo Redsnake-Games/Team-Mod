@@ -80,11 +80,11 @@ public class RenderTeamChest extends TileEntityChestRenderer
 		{
 			model.chestLid.rotateAngleX = -(f1 * (float)Math.PI / 2.0F);
 			
-			if(var1.prefix!=null&&var1.prefix.length()>0)
+			if(var1.getPrefix()!=null&&var1.getPrefix().length()>0)
 			{
 				GL11.glPushMatrix();
 				bindTexture(overlay);
-				int col = getColor(var1.prefix);
+				int col = getColor(var1.getPrefix());
 				float j = col >> 16 & 255;
 				float k = col >> 8 & 255;
 				float l = col & 255;

@@ -100,8 +100,7 @@ public class BlockTeamChest extends BlockContainer {
 		if(ent.getTeam()!=null)
 		{
 			TileEntityTeamChest tile = (TileEntityTeamChest) w.getTileEntity(pos);
-			tile.team = ent.getTeam().getRegisteredName();
-			tile.prefix = ((ScorePlayerTeam)ent.getTeam()).getColorPrefix();
+			tile.setTeam(ent.getTeam().getRegisteredName());
 		}
 	}
 	
@@ -114,9 +113,9 @@ public class BlockTeamChest extends BlockContainer {
 	public float getPlayerRelativeBlockHardness(EntityPlayer pl, World w, BlockPos pos) 
 	{
 		TileEntityTeamChest tile = (TileEntityTeamChest) w.getTileEntity(pos);
-		if(tile!=null&&tile.team!=null&&pl.getTeam()!=null)
+		if(tile!=null&&tile.getTeam()!=null&&pl.getTeam()!=null)
 		{
-			if(tile.team.equals(pl.getTeam().getRegisteredName()))
+			if(tile.getTeam().equals(pl.getTeam().getRegisteredName()))
 			{
 				return super.getPlayerRelativeBlockHardness(pl, w, pos);
 			}
@@ -133,9 +132,9 @@ public class BlockTeamChest extends BlockContainer {
         else
         {
         	TileEntityTeamChest tile = (TileEntityTeamChest) w.getTileEntity(pos);
-			if(tile!=null&&tile.team!=null&&playerIn.getTeam()!=null)
+			if(tile!=null&&tile.getTeam()!=null&&playerIn.getTeam()!=null)
 			{
-				if(tile.team.equals(playerIn.getTeam().getRegisteredName()))
+				if(tile.getTeam().equals(playerIn.getTeam().getRegisteredName()))
 				{
 					playerIn.displayGUIChest(tile);
 				}

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Random;
 
 import net.minecraft.block.BlockBasePressurePlate;
+import net.minecraft.block.BlockContainer;
 import net.minecraft.block.BlockPressurePlate;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -16,6 +17,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
@@ -33,14 +35,25 @@ public class BlockTeamPressurePlate extends BlockBasePressurePlate implements IT
 		setCreativeTab(MainTeam.tabTeam);
 		setHarvestLevel("pickaxe", 1);
 	}
-	@Override
-	protected void updateState(World worldIn, BlockPos pos, IBlockState state, int oldRedstoneStrength) 
-	{
-		TileEntity tile = worldIn.getTileEntity(pos);
-		super.updateState(worldIn, pos, state, oldRedstoneStrength);
-		worldIn.setTileEntity(pos, tile);
-	}
+//	@Override
+//	protected void updateState(World worldIn, BlockPos pos, IBlockState state, int oldRedstoneStrength) 
+//	{
+//		TileEntity tile = worldIn.getTileEntity(pos);
+//		NBTTagCompound nbt = new NBTTagCompound();
+//		tile.writeToNBT(nbt);
+//		super.updateState(worldIn, pos, state, oldRedstoneStrength);
+//		TileEntity tile2 = createNewTileEntity(worldIn, 0);
+//		tile2.setWorldObj(worldIn);
+//		tile2.readFromNBT(nbt);
+//		worldIn.setTileEntity(pos, tile2);
+//	}
 
+	public boolean onBlockEventReceived(World worldIn, BlockPos pos, IBlockState state, int eventID, int eventParam)
+    {
+        super.onBlockEventReceived(worldIn, pos, state, eventID, eventParam);
+        TileEntity tileentity = worldIn.getTileEntity(pos);
+        return tileentity == null ? false : tileentity.receiveClientEvent(eventID, eventParam);
+    }
 	
     @Override
     protected int computeRedstoneStrength(final World w, final BlockPos pos)
@@ -53,9 +66,9 @@ public class BlockTeamPressurePlate extends BlockBasePressurePlate implements IT
 				if(var1 instanceof EntityPlayer)
 				{
 					TileEntityTeamBase base = (TileEntityTeamBase) w.getTileEntity(pos);
-					if(base.team.length()>0)
+					if(base.getTeam().length()>0)
 					{
-						if(((EntityPlayer) var1).getTeam()!=null && base.team.equals(((EntityPlayer) var1).getTeam().getRegisteredName()))
+						if(((EntityPlayer) var1).getTeam()!=null && base.getTeam().equals(((EntityPlayer) var1).getTeam().getRegisteredName()))
 						{
 							return true;
 						}
@@ -95,10 +108,14 @@ public class BlockTeamPressurePlate extends BlockBasePressurePlate implements IT
 	}
 
 	@Override
-	public int colorMultiplier(IBlockAccess w, BlockPos pos, int renderpass) 
+	public int colorMultiplier(IBlockAccess w, BlockPos pos, int r) 
 	{		
-		String prefix = ((TileEntityTeamBase)w.getTileEntity(pos)).prefix;
-		return getColor(prefix);	
+		TileEntityTeamBase tile = ((TileEntityTeamBase)w.getTileEntity(pos));
+		if(tile!=null)
+		{
+			return getColor(tile.getPrefix());	
+		}
+		return super.colorMultiplier(w, pos, r);
 	}
 	
 	private int getColor(String s)
@@ -123,7 +140,7 @@ public class BlockTeamPressurePlate extends BlockBasePressurePlate implements IT
 		if(pl.getTeam()!=null)
 		{
 			TileEntityTeamBase t = (TileEntityTeamBase) w.getTileEntity(pos);
-			t.team = pl.getTeam().getRegisteredName();	
+			t.setTeam(pl.getTeam().getRegisteredName());	
 		}
 		//w.setBlockState(pos, state);
 	}
@@ -132,9 +149,9 @@ public class BlockTeamPressurePlate extends BlockBasePressurePlate implements IT
 	public float getPlayerRelativeBlockHardness(EntityPlayer pl, World w, BlockPos pos) 
 	{
 		TileEntityTeamBase tile = (TileEntityTeamBase) w.getTileEntity(pos);
-		if(tile!=null&&tile.team!=null&&pl.getTeam()!=null)
+		if(tile!=null&&tile.getTeam()!=null&&pl.getTeam()!=null)
 		{
-			if(tile.team.equals(pl.getTeam().getRegisteredName()))
+			if(tile.getTeam().equals(pl.getTeam().getRegisteredName()))
 			{
 				return super.getPlayerRelativeBlockHardness(pl, w, pos);
 			}

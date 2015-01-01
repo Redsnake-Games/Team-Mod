@@ -304,20 +304,26 @@ public class TileEntityTeamFlag extends TileEntity implements IUpdatePlayerListB
 					for(int z = pos.getZ()-range;z < pos.getZ()+range;z++)
 					{
 						BlockPos xyz = new BlockPos(x, y, z);
-						Block b = worldObj.getBlockState(xyz).getBlock();
-						//System.out.println(b);
-						if(b==MainTeam.teamChest)
+						TileEntity tile = worldObj.getTileEntity(xyz);
+						if(tile instanceof ITeamAble)
 						{
-							TileEntityTeamChest t = (TileEntityTeamChest) worldObj.getTileEntity(xyz);
-							System.out.println(t);
-							t.team = this.team;
+							((ITeamAble)tile).setTeam(this.team);
+							System.out.println(tile);
 						}
-						if(b==MainTeam.teamBlock || b == MainTeam.teamSpawner || b == MainTeam.teamPressurePlate)
-						{
-							TileEntityTeamBase t = (TileEntityTeamBase) worldObj.getTileEntity(xyz);
-							t.team = this.team;			
-							System.out.println(t);
-						}
+//						Block b = worldObj.getBlockState(xyz).getBlock();
+//						//System.out.println(b);
+//						if(b==MainTeam.teamChest)
+//						{
+//							TileEntityTeamChest t = (TileEntityTeamChest) worldObj.getTileEntity(xyz);
+//							System.out.println(t);
+//							t.team = this.team;
+//						}
+//						if(b==MainTeam.teamBlock || b == MainTeam.teamSpawner || b == MainTeam.teamPressurePlate)
+//						{
+//							TileEntityTeamBase t = (TileEntityTeamBase) worldObj.getTileEntity(xyz);
+//							t.team = this.team;			
+//							System.out.println(t);
+//						}
 					}
 				}
 			}

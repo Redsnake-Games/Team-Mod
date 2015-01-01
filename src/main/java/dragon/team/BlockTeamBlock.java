@@ -38,7 +38,7 @@ public class BlockTeamBlock extends BlockContainer
 	@Override
 	public int colorMultiplier(IBlockAccess w, BlockPos pos,int renderPass)
 	{
-		String prefix = ((TileEntityTeamBase)w.getTileEntity(pos)).prefix;
+		String prefix = ((TileEntityTeamBase)w.getTileEntity(pos)).getPrefix();
 		return getColor(prefix);	
 	}
 
@@ -113,7 +113,7 @@ public class BlockTeamBlock extends BlockContainer
 		if(pl.getTeam()!=null)
 		{
 			TileEntityTeamBase t = (TileEntityTeamBase) w.getTileEntity(pos);
-			t.team = pl.getTeam().getRegisteredName();	
+			t.setTeam(pl.getTeam().getRegisteredName());	
 		}
 		IBlockState newState = state.withProperty(META, it.getItemDamage());
 		w.setBlockState(pos, newState, 2);
@@ -131,9 +131,9 @@ public class BlockTeamBlock extends BlockContainer
 	public float getPlayerRelativeBlockHardness(EntityPlayer pl, World w, BlockPos pos) 
 	{
 		TileEntityTeamBase tile = (TileEntityTeamBase) w.getTileEntity(pos);
-		if(tile!=null&&tile.team!=null&&pl.getTeam()!=null)
+		if(tile!=null&&tile.getTeam()!=null&&pl.getTeam()!=null)
 		{
-			if(tile.team.equals(pl.getTeam().getRegisteredName()))
+			if(tile.getTeam().equals(pl.getTeam().getRegisteredName()))
 			{
 				return super.getPlayerRelativeBlockHardness(pl, w, pos);
 			}

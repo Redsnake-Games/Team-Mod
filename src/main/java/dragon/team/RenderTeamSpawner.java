@@ -18,11 +18,11 @@ public class RenderTeamSpawner extends TileEntitySpecialRenderer
 		
 		ItemStack it = new ItemStack(MainTeam.teamWappen);
 		it.setTagCompound(new NBTTagCompound());
-		ScorePlayerTeam team = var1.getWorld().getScoreboard().getTeam(var1.team);
+		ScorePlayerTeam team = var1.getWorld().getScoreboard().getTeam(var1.getTeam());
 		if(team!=null)
 			it.getTagCompound().setString("prefix", team.getColorPrefix());
 		EntityItem item = new EntityItem(var1.getWorld(), 0, 0, 0, it);
-		item.hoverStart = (float) (((double)var1.time)/(double)var1.maxtime * 180F);
+		item.hoverStart = (float) (((double)var1.spawnTime)/(double)var1.maxtime * 180F);
 		
 		
 		GL11.glTranslated(var2+0.5, var4+0.0, var6+0.5);

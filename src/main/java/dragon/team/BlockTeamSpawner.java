@@ -63,6 +63,7 @@ public class BlockTeamSpawner extends BlockContainer
 				{
 					pl.getHeldItem().stackSize--;
 					tile.engine++;
+					w.markBlockForUpdate(pos);
 					return true;
 				}
 			}
@@ -77,7 +78,7 @@ public class BlockTeamSpawner extends BlockContainer
 		if(pl.getTeam()!=null)
 		{
 			TileEntityTeamBase t = (TileEntityTeamBase) w.getTileEntity(pos);
-			t.team = pl.getTeam().getRegisteredName();	
+			t.setTeam(pl.getTeam().getRegisteredName());	
 		}
 		w.setBlockState(pos, state, 2);
 	}

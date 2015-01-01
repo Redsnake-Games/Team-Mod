@@ -7,9 +7,11 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.scoreboard.ScorePlayerTeam;
 import net.minecraft.scoreboard.Team;
+import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
@@ -17,10 +19,10 @@ import net.minecraft.util.EnumFacing;
 
 import com.google.common.base.Predicate;
 
-public class TileEntityTeamChest extends TileEntityChest implements ISidedInventory
+public class TileEntityTeamChest extends TileEntityChest implements ISidedInventory, ITeamAble, IUpdatePlayerListBox
 {
-	String team = null;
-	String prefix = null;
+	private String team = null;
+	private String prefix = null;
 	int time=0;
 	
 	@Override
@@ -29,8 +31,8 @@ public class TileEntityTeamChest extends TileEntityChest implements ISidedInvent
 		super.writeToNBT(p_145841_1_);
 		if(team!=null)
 			p_145841_1_.setString("team", team);
-		if(prefix!=null)
-			p_145841_1_.setString("prefix", prefix);
+		if(getPrefix()!=null)
+			p_145841_1_.setString("prefix", getPrefix());
 	}
 	
 	@Override
@@ -43,7 +45,7 @@ public class TileEntityTeamChest extends TileEntityChest implements ISidedInvent
 		}
 		if(p_145839_1_.hasKey("prefix"))
 		{
-			prefix = p_145839_1_.getString("prefix");
+			prefix = (p_145839_1_.getString("prefix"));
 		}
 	}
 	
@@ -53,6 +55,16 @@ public class TileEntityTeamChest extends TileEntityChest implements ISidedInvent
 		return block instanceof BlockTeamChest;
 	}
 	 
+	@Override
+	public Packet getDescriptionPacket() 
+	{
+		NBTTagCompound nbt = new NBTTagCompound();
+		writeToNBT(nbt);
+		S35PacketUpdateTileEntity pkt = new S35PacketUpdateTileEntity(this.pos, getBlockMetadata(), nbt);
+		return pkt;
+	}
+	
+	
 	public void closeInventory()
 	{
 		if (this.getBlockType() instanceof BlockTeamChest)
@@ -75,46 +87,6 @@ public class TileEntityTeamChest extends TileEntityChest implements ISidedInvent
 	{
 
 		super.update();
-		
-		if(team !=null)
-		{
-			ScorePlayerTeam t = worldObj.getScoreboard().getTeam(team);
-			if(t!=null)
-			{
-				prefix = t.getColorPrefix();
-			}
-			else
-			{
-				prefix=null;
-			}
-		}
-		else
-		{
-			prefix=null;
-		}
-		
-		if(!worldObj.isRemote && time <= 0)
-		{
-			time = 20;
-			
-			NBTTagCompound nbt = new NBTTagCompound();
-			writeToNBT(nbt);
-			final S35PacketUpdateTileEntity pack = new S35PacketUpdateTileEntity(pos, getBlockMetadata(), nbt);
-			worldObj.func_175674_a(null, new AxisAlignedBB(new BlockPos(pos).add(-20, -20, -20), new BlockPos(pos).add(20, 20, 20)), new Predicate() 
-			{			
-				@Override
-				public boolean apply(Object var1) 
-				{
-					if (var1 instanceof EntityPlayerMP) 
-					{
-						((EntityPlayerMP)var1).playerNetServerHandler.sendPacket(pack);
-					}
-					return false;
-				}
-
-			});
-		}
-		time--;
 	}
 	
 	@Override
@@ -123,6 +95,8 @@ public class TileEntityTeamChest extends TileEntityChest implements ISidedInvent
 		if(worldObj.isRemote && pkt.func_179823_a().equals(pos))
 		{
 			readFromNBT(pkt.getNbtCompound());
+			worldObj.markBlockForUpdate(this.pos);
+			super.onDataPacket(net, pkt);
 		}
 	}
 	
@@ -167,5 +141,44 @@ public class TileEntityTeamChest extends TileEntityChest implements ISidedInvent
 	public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction) 
 	{
 		return false;
+	}
+
+	@Override
+	public String getTeam() 
+	{
+		return this.team;
+	}
+
+	@Override
+	public void setTeam(String s) 
+	{
+		this.team = s;
+		ScorePlayerTeam t = worldObj.getScoreboard().getTeam(team);
+		if(t!=null)
+		{
+			prefix = t.getColorPrefix();
+		}
+		else
+		{
+			prefix = "";
+		}
+		worldObj.func_175674_a(null, new AxisAlignedBB(new BlockPos(pos).add(-20, -20, -20), new BlockPos(pos).add(20, 20, 20)), new Predicate() 
+		{			
+			@Override
+			public boolean apply(Object var1) 
+			{
+				if (var1 instanceof EntityPlayerMP) 
+				{
+					((EntityPlayerMP)var1).playerNetServerHandler.sendPacket(getDescriptionPacket());
+				}
+				return false;
+			}
+
+		});
+	}
+
+	public String getPrefix()
+	{
+		return prefix;
 	}
 }

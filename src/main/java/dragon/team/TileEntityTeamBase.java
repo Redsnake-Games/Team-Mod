@@ -14,11 +14,11 @@ import net.minecraft.util.BlockPos;
 
 import com.google.common.base.Predicate;
 
-public class TileEntityTeamBase extends TileEntity implements IUpdatePlayerListBox
+public class TileEntityTeamBase extends TileEntity implements IUpdatePlayerListBox, ITeamAble
 {
-	String team = "";
-	String prefix = "";
-	int time=0;
+	private String team = "";
+	private String prefix = "";
+//	int time=0;
 	
 	@Override
 	public void writeToNBT(NBTTagCompound nbt) 
@@ -56,40 +56,79 @@ public class TileEntityTeamBase extends TileEntity implements IUpdatePlayerListB
 	@Override
 	public void update() 
 	{
-		if(team.length()>0)
+//		if(team.length()>0)
+//		{
+//			ScorePlayerTeam t = worldObj.getScoreboard().getTeam(team);
+//			if(t!=null)
+//			{
+//				prefix = t.getColorPrefix();
+//			}
+//			else
+//			{
+//				prefix="";
+//			}
+//		}
+//		else
+//		{
+//			prefix="";
+//		}
+//		if(!worldObj.isRemote&&time==0)
+//		{
+//			//System.out.println(team + " at " + pos);
+//			time = 20;
+//			worldObj.func_175674_a(null, new AxisAlignedBB(new BlockPos(pos).add(-20, -20, -20), new BlockPos(pos).add(20, 20, 20)), new Predicate() 
+//			{			
+//				@Override
+//				public boolean apply(Object var1) 
+//				{
+//					if (var1 instanceof EntityPlayerMP) 
+//					{
+//						((EntityPlayerMP)var1).playerNetServerHandler.sendPacket(getDescriptionPacket());
+//					}
+//					return false;
+//				}
+//
+//			});
+//		}
+//		time--;
+	}
+
+	@Override
+	public String getTeam() 
+	{
+		return team;
+	}
+
+	@Override
+	public void setTeam(String s) 
+	{
+		this.team = s;
+		ScorePlayerTeam t = worldObj.getScoreboard().getTeam(team);
+		if(t!=null)
 		{
-			ScorePlayerTeam t = worldObj.getScoreboard().getTeam(team);
-			if(t!=null)
-			{
-				prefix = t.getColorPrefix();
-			}
-			else
-			{
-				prefix="";
-			}
+			prefix = t.getColorPrefix();
 		}
 		else
 		{
 			prefix="";
 		}
-		if(!worldObj.isRemote&&time==0)
-		{
-			
-			time = 20;
-			worldObj.func_175674_a(null, new AxisAlignedBB(new BlockPos(pos).add(-20, -20, -20), new BlockPos(pos).add(20, 20, 20)), new Predicate() 
-			{			
-				@Override
-				public boolean apply(Object var1) 
+		worldObj.func_175674_a(null, new AxisAlignedBB(new BlockPos(pos).add(-20, -20, -20), new BlockPos(pos).add(20, 20, 20)), new Predicate() 
+		{			
+			@Override
+			public boolean apply(Object var1) 
+			{
+				if (var1 instanceof EntityPlayerMP) 
 				{
-					if (var1 instanceof EntityPlayerMP) 
-					{
-						((EntityPlayerMP)var1).playerNetServerHandler.sendPacket(getDescriptionPacket());
-					}
-					return false;
+					((EntityPlayerMP)var1).playerNetServerHandler.sendPacket(getDescriptionPacket());
 				}
+				return false;
+			}
 
-			});
-		}
-		time--;
+		});
+	}
+
+	public String getPrefix() 
+	{
+		return prefix;
 	}
 }

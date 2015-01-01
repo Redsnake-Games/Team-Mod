@@ -37,7 +37,7 @@ public class TileEntityTeamSpawner extends TileEntityTeamBase implements IUpdate
 		super.update();		
 		if(spawnTime <= 0 && engine >0 && !worldObj.isRemote)
 		{		
-			ScorePlayerTeam team = worldObj.getScoreboard().getTeam(this.team);
+			ScorePlayerTeam team = worldObj.getScoreboard().getTeam(this.getTeam());
 			if(team!=null)
 			{
 				EntityTeamGolem golem = new EntityTeamGolem(worldObj);
@@ -47,11 +47,12 @@ public class TileEntityTeamSpawner extends TileEntityTeamBase implements IUpdate
 				if(worldObj.getBlockState(new BlockPos(x, y, z))==Blocks.air && worldObj.getBlockState(new BlockPos(x, y+1, z))==Blocks.air && worldObj.getEntitiesWithinAABB(EntityTeamGolem.class,  new AxisAlignedBB(pos, pos).offset(0.5, 0.5, 0.5).expand(10, 10, 10)).size()<10)
 				{
 					golem.setPosition(x, y, z);
-					golem.setTeamName(this.team);
+					golem.setTeamName(getTeam());
 					golem.setAlternateHome(x, y, z, 30);
 					worldObj.spawnEntityInWorld(golem);
 					engine--;
 					spawnTime = maxtime;
+					worldObj.markBlockForUpdate(pos);
 				}				
 			}
 		}
